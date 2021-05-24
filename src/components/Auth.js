@@ -1,44 +1,72 @@
-import React from "react";
+import React, { useState } from "react";
+import { auth } from "../firebase";
 
 const Auth = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const onSubmitForm = (e) => {
+    e.preventDefault();
+    auth
+      .createUserWithEmailAndPassword(email, password)
+      .then((userCredentials) => {
+        setPassword("");
+        setEmail("");
+        console.log("signed up!", userCredentials);
+      });
+  };
+
   return (
-    <div>
-      <div class="ui placeholder segment">
-        <div class="ui two column very relaxed stackable grid">
-          <div class="column">
-            <div class="ui form">
-              <div class="field">
+    <form onSubmit={onSubmitForm}>
+      <div className="ui placeholder segment">
+        <div className="ui two column very relaxed stackable grid">
+          <div className="column">
+            <div className="ui form">
+              <div className="field">
                 <label>Username</label>
-                <div class="ui left icon input">
-                  <input type="text" placeholder="Username" />
-                  <i class="user icon"></i>
+                <div className="ui left icon input">
+                  <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    type="email"
+                    placeholder="Email"
+                  />
+                  <i className="user icon"></i>
                 </div>
               </div>
-              <div class="field">
+              <div className="field">
                 <label>Password</label>
-                <div class="ui left icon input">
-                  <input type="password" />
-                  <i class="lock icon"></i>
+                <div className="ui left icon input">
+                  <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    type="password"
+                  />
+                  <i className="lock icon"></i>
                 </div>
               </div>
-              <div class="ui blue submit button">Register</div>
+              <input
+                type="submit"
+                className="ui blue submit button"
+                value="Register"
+              />
             </div>
           </div>
-          <div class="middle aligned column">
-            <div class="ui  button">
-              <i class="google icon"></i>
+          <div className="middle aligned column">
+            <div className="ui  button">
+              <i className="google icon"></i>
               Sign Up with Google
             </div>
             <br />
-            <div class="ui  button">
-              <i class="github icon"></i>
+            <div className="ui  button">
+              <i className="github icon"></i>
               Sign Up with Github
             </div>
           </div>
         </div>
-        <div class="ui vertical divider">Or</div>
+        <div className="ui vertical divider">Or</div>
       </div>
-    </div>
+    </form>
   );
 };
 
