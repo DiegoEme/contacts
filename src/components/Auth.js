@@ -4,16 +4,29 @@ import { auth } from "../firebase";
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [newAccount, setNewAccount] = useState(true);
 
   const onSubmitForm = (e) => {
     e.preventDefault();
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        setPassword("");
-        setEmail("");
-        console.log("signed up!", userCredentials);
-      });
+    if (newAccount) {
+      auth
+        .signInWithEmailAndPassword(email, password)
+        .then((userCredentials) => {
+          console.log("inició sesión", userCredentials.user);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      auth
+        .createUserWithEmailAndPassword(email, password)
+        .then((userCredentials) => {
+          setPassword("");
+          setEmail("");
+          console.log("Cuenta creada", userCredentials);
+        })
+        .catch((error) => console.log(error));
+    }
   };
 
   return (
@@ -23,13 +36,12 @@ const Auth = () => {
           <div className="column">
             <div className="ui form">
               <div className="field">
-                <label>Username</label>
+                <label>Email</label>
                 <div className="ui left icon input">
                   <input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
-                    placeholder="Email"
                   />
                   <i className="user icon"></i>
                 </div>
@@ -48,8 +60,14 @@ const Auth = () => {
               <input
                 type="submit"
                 className="ui blue submit button"
-                value="Register"
+                value={newAccount ? "Log in" : "Register"}
               />
+              <p
+                style={{ textAlign: "center" }}
+                onClick={() => setNewAccount((prev) => !prev)}
+              >
+                {newAccount ? "Register" : "Log in"}
+              </p>
             </div>
           </div>
           <div className="middle aligned column">
